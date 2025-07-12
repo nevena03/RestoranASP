@@ -1,4 +1,6 @@
-﻿namespace RestoranASP.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RestoranASP.Models
 {
     public class StavkaNarudzbine
     {
@@ -10,6 +12,7 @@
 
         public Jelo? Jelo { get; set; }
 
+        [Range(0, 50, ErrorMessage = "Broj porcija ne može biti veći od 50!")]
         public int? BrojPorcija {  get; set; }
 
 
