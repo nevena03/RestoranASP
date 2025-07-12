@@ -1,0 +1,27 @@
+﻿@model RestoranASP.Models.Kategorija
+@{
+	ViewData["Title"] = "Detaljnije o kategoriji";
+}
+<h2 class="text-center mb-3">@Model.Naziv</h2>
+
+<div class="row justify-content-center">
+	<div class="row col-9 justify-content-around flex-wrap container border border-warning bg-light p-3">
+		@foreach(var j in Model.Jela)
+		{
+			<div class="col-3 m-2">
+				<div>
+					<img src="@j.Slika" style="width: 100%" />
+				</div>
+				<div>
+					<div class="text-center fw-bold">
+						<a asp-controller="Jelo" asp-action="Details" asp-route-id="@j.Id">@j.Naziv</a>
+					</div>
+					<div class="text-center fw-bold">
+						@j.Cena RSD
+					</div>
+				</div>
+			</div>
+		}
+		
+	</div>
+</div>

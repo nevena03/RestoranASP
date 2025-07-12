@@ -1,0 +1,45 @@
+﻿@model IEnumerable<RestoranASP.Models.Jelo>
+@{
+    ViewData["Title"] = "Sva jela";
+}
+<h2 class="text-center mb-3">Sva jela</h2>
+@if (User.IsInRole("Admin"))
+{
+    <div class="d-flex justify-content-end mb-3">
+        <a asp-action="Create" class="btn btn-success">Dodaj novo jelo</a>
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr class="table-warning">
+            <th>Naziv</th>
+            <th>Opcije</th>
+
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var j in Model)
+        {
+            <tr class="table-warning">
+                <td>@j.Naziv</td>
+                <td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@j.Id" class="btn btn-warning">Izmeni</a>
+                        <form asp-action="Delete" method="post" class="d-inline">
+                            <input type="hidden" value="@j.Id" name="id" />
+                            <button type="submit" class="btn btn-danger">Obriši</button>
+                        </form>
+                    }
+                 
+                    <a asp-action="Details" asp-route-id="@j.Id" class="btn btn-primary">Detaljnije</a>
+                   
+                </td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>

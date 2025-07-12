@@ -1,0 +1,38 @@
+﻿@model IEnumerable<RestoranASP.Models.Narudzbina>
+@{
+    ViewData["Title"] = "Narudzbine";
+}
+<h2 class="text-center mb-3">Narudžbine</h2>
+<div class="d-flex justify-content-end mb-3">
+    <a asp-action="Create" class="btn btn-success">Dodaj novu narudžbinu</a>
+</div>
+<table class="table">
+    <thead>
+        <tr class="table-warning">
+            <th>Datum</th>
+            <th>Broj jela</th>
+            <th>Opcije</th>
+
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var n in Model)
+        {
+            <tr class="table-warning">
+                <td>@n.Datum</td>
+                <td>@n.Jela.Count</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@n.Id" class="btn btn-warning">Izmeni</a>
+                    <a asp-action="Details" asp-route-id="@n.Id" class="btn btn-primary">Detaljnije</a>
+                    <form asp-action="Delete" method="post" class="d-inline">
+                        <input type="hidden" value="@n.Id" name="id" />
+                        <button type="submit" class="btn btn-danger">Obriši</button>
+                    </form>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>

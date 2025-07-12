@@ -1,0 +1,40 @@
+﻿@model NarudzbinaCreateViewModel
+
+<h2>Izmeni narudžbinu</h2>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="NarudzbinaId" />
+
+    <div class="mb-3">
+        <label asp-for="Datum"></label>
+        <input asp-for="Datum" type="datetime-local" class="form-control" />
+        <span asp-validation-for="Datum" class="text-danger"></span>
+    </div>
+
+    <h4>Izabrana jela</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th><th>Jelo</th><th>Količina</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for (int i = 0; i < Model.Jela.Count; i++)
+        {
+            <tr>
+                <td>
+                    <input asp-for="Jela[@i].IsChecked" />
+                    <input asp-for="Jela[@i].JeloId" type="hidden" />
+                </td>
+                <td>@Model.Jela[i].Naziv</td>
+                <td>
+                    <input asp-for="Jela[@i].BrojPorcija" class="form-control" style="width: 80px;" />
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Sačuvaj izmene</button>
+</form>

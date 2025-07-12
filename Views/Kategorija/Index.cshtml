@@ -1,0 +1,42 @@
+﻿@model IEnumerable<RestoranASP.Models.Kategorija>
+@{
+	ViewData["Title"] = "Sve kategorije";
+}
+<h2 class="text-center mb-3">Sve kategorije</h2>
+@if (User.IsInRole("Admin"))
+{
+    <div class="d-flex justify-content-end mb-3">
+        <a asp-action="Create" class="btn btn-success">Dodaj novu kategoriju</a>
+    </div>
+}
+<table class="table">
+    <thead>
+        <tr class="table-warning">
+           <th>Naziv</th>
+           <th>Opcije</th>
+
+        </tr>
+        
+    </thead>
+    <tbody>
+        @foreach(var k in Model)
+        {
+            <tr class="table-warning">
+                <td>@k.Naziv</td>
+                <td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@k.Id" class="btn btn-warning">Izmeni</a>
+                        <form asp-action="Delete" method="post" class="d-inline">
+                            <input type="hidden" value="@k.Id" name="id" />
+                            <button type="submit" class="btn btn-danger">Obriši</button>
+                        </form>   
+                    }
+                    <a asp-action="Details" asp-route-id="@k.Id" class="btn btn-primary">Detaljnije</a>
+                </td>
+            </tr>
+        }
+     
+    </tbody>
+   
+</table>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestoranASP.Data;
 
@@ -11,9 +12,11 @@ using RestoranASP.Data;
 namespace RestoranASP.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250710165218_SlikaJela")]
+    partial class SlikaJela
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,10 +105,12 @@ namespace RestoranASP.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -142,10 +147,12 @@ namespace RestoranASP.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -299,7 +306,7 @@ namespace RestoranASP.Data.Migrations
                     b.Property<int>("JeloId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("BrojPorcija")
+                    b.Property<int?>("Kolicina")
                         .HasColumnType("int");
 
                     b.HasKey("NarudzbinaId", "JeloId");
@@ -363,7 +370,7 @@ namespace RestoranASP.Data.Migrations
             modelBuilder.Entity("RestoranASP.Models.Jelo", b =>
                 {
                     b.HasOne("RestoranASP.Models.Kategorija", "Kategorija")
-                        .WithMany("Jela")
+                        .WithMany()
                         .HasForeignKey("KategorijaId");
 
                     b.Navigation("Kategorija");
@@ -402,11 +409,6 @@ namespace RestoranASP.Data.Migrations
             modelBuilder.Entity("RestoranASP.Models.Jelo", b =>
                 {
                     b.Navigation("Narudzbine");
-                });
-
-            modelBuilder.Entity("RestoranASP.Models.Kategorija", b =>
-                {
-                    b.Navigation("Jela");
                 });
 
             modelBuilder.Entity("RestoranASP.Models.Narudzbina", b =>

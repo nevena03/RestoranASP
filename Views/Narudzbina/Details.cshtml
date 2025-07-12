@@ -1,0 +1,39 @@
+﻿@model RestoranASP.Models.Narudzbina
+@{
+	ViewData["Title"] = "Detaljnije o narudzbini";
+}
+<h2 class="text-center mb-3">Narudžbina</h2>
+
+<div class="row justify-content-center">
+	<div class="col-9 row justify-content-between mb-2">
+		<p class="col-auto fw-bold">
+			Korisnik: @Model.User.Ime
+
+		</p>
+		<p class="col-auto fw-bold">
+			Datum: @Model.Datum
+		</p>
+	</div>
+	<div class="row col-9 justify-content-around flex-wrap container border border-warning bg-light p-3">
+		@foreach (var sn in Model.Jela)
+		{
+			<div class="col-3 m-2">
+				<div>
+					<img src="@sn.Jelo.Slika" style="width: 100%" />
+				</div>
+				<div>
+					<div class="text-center fw-bold">
+						<a asp-controller="Jelo" asp-action="Details" asp-route-id="@sn.Jelo.Id">@sn.Jelo.Naziv</a>
+					</div>
+					<div class="text-center fw-bold">
+						@sn.Jelo.Cena RSD
+					</div>
+					<div class="text-center fw-bold">
+						Broj porcija: @sn.BrojPorcija
+					</div>
+				</div>
+			</div>
+		}
+
+	</div>
+</div>

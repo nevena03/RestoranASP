@@ -1,0 +1,37 @@
+﻿@model RestoranASP.Models.Jelo
+@{
+	ViewData["Title"] = "Izmena jela";
+
+}
+<h2 class="text-center mb-3">Izmena jela</h2>
+<div class="row justify-content-center">
+	<div class="container border border-warning p-4 col-7 bg-light">
+		<form asp-action="Edit" method="post">
+			<div class="form-group">
+				<label asp-for="Naziv" class="form-label fw-bold">Naziv jela: </label>
+				<input type="text" class="form-control" asp-for="Naziv" placeholder="Unesite naziv jela">
+
+			</div>
+			<div class="form-group">
+				<label asp-for="Cena" class="form-label fw-bold">Cena jela:  </label>
+				<input type="number" class="form-control" asp-for="Cena" placeholder="Unesite cenu jela">
+
+			</div>
+			<div class="form-group">
+				<label asp-for="Slika" class="form-label fw-bold">URL slike: </label>
+				<input type="text" class="form-control" asp-for="Slika" placeholder="Unesite adresu slike">
+
+			</div>
+			<div class="form-group">
+				<label asp-for="KategorijaId" class="form-label fw-bold">Kategorija jela: </label>
+				@Html.DropDownListFor(Model => Model.KategorijaId, (SelectList)ViewBag.Kategorije, "Odaberi kategoriju", new { @class = "form-control" })
+				@Html.ValidationMessageFor(Model => Model.KategorijaId)
+
+			</div>
+			<div class="d-flex justify-content-center mt-3">
+				<button type="submit" class="btn btn-warning">Izmeni jelo</button>
+			</div>
+
+		</form>
+	</div>
+</div>
