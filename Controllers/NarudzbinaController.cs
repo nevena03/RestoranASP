@@ -48,6 +48,25 @@ namespace RestoranASP.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            if(!model.Jela.Any(j => j.IsChecked))
+            {
+                ModelState.AddModelError("", "Morate izabrati bar jedno jelo!");
+                var svaJela = await _context.Jela
+                .Select(j => new JeloCheckboxViewModel
+                {
+                    JeloId = j.Id,
+                    Naziv = j.Naziv,
+                    Cena = j.Cena,
+                    IsChecked = false
+
+                }).ToListAsync();
+
+                var ponovo_model = new NarudzbinaCreateViewModel
+                {
+                    Jela = svaJela
+                };
+                return View(ponovo_model);
+            }
             var nar = new Narudzbina
             {
                 Datum = model.Datum,
@@ -132,6 +151,26 @@ namespace RestoranASP.Controllers
         {
             if (!ModelState.IsValid)
                 return View(model);
+
+            if (!model.Jela.Any(j => j.IsChecked))
+            {
+                ModelState.AddModelError("", "Morate izabrati bar jedno jelo!");
+                var svaJela = await _context.Jela
+                .Select(j => new JeloCheckboxViewModel
+                {
+                    JeloId = j.Id,
+                    Naziv = j.Naziv,
+                    Cena = j.Cena,
+                    IsChecked = false
+
+                }).ToListAsync();
+
+                var ponovo_model = new NarudzbinaCreateViewModel
+                {
+                    Jela = svaJela
+                };
+                return View(ponovo_model);
+            }
 
             var narudzbina = await _context.Narudzbine
                 .Include(n => n.Jela)

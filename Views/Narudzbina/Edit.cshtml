@@ -1,6 +1,18 @@
 ﻿@model NarudzbinaCreateViewModel
+@{
+    ViewData["Title"] = "Izmena narudžbine";
+}
 
 <h2>Izmeni narudžbinu</h2>
+
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    </div>
+}
+
 
 <form asp-action="Edit" method="post">
     @Html.AntiForgeryToken()

@@ -105,10 +105,17 @@ namespace RestoranASP.Controllers
         {
             var j = await _context.Jela.FindAsync(id);
 
-            _context.Jela.Remove(j);
+            try
+            {
+                _context.Jela.Remove(j);
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest("Jelo ne može biti obrisano, jer se nalazi u nekim narudžbinama!");
+            }
         }
 
         

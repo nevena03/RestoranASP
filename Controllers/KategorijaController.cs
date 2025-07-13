@@ -90,10 +90,17 @@ namespace RestoranASP.Controllers
         {
             var k = await _context.Kategorije.FindAsync(id);
 
-            _context.Kategorije.Remove(k);
+            try
+            {
+                _context.Kategorije.Remove(k);
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest("U kategoriji se nalaze jela! Zabranjeno brisanje!");
+            }
         }
 
         [Authorize]

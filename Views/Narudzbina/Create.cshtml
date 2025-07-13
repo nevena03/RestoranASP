@@ -3,6 +3,16 @@
 	ViewData["Title"] = "Kreiraj narudzbinu";
 
 }
+
+<h2>Kreiraj narudžbinu</h2>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    </div>
+}
+
 <form asp-action="Create" method="post">
     @Html.AntiForgeryToken()
 

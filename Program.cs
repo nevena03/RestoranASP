@@ -49,7 +49,10 @@ app.MapRazorPages();
 
 using(var scope = app.Services.CreateScope())
 {
-    await DbSeeder.SeedRolesAsync(scope.ServiceProvider);
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    await DbSeeder.SeedRolesAsync(services);
+    await DbSeeder.SeedKategorijeAsync(context);
 }
 
 app.Run();
