@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RestoranASP.Models.Jelo>
+﻿@model RestoranASP.Models.ViewModels.JeloFilterViewModel
 @{
     ViewData["Title"] = "Sva jela";
 }
@@ -9,37 +9,77 @@
         <a asp-action="Create" class="btn btn-success">Dodaj novo jelo</a>
     </div>
 }
+<form method="get" asp-action="Index" class="row gy-3 gx-2 mb-5 justify-content-center">
+    <div class="col-md-4">
+        <label asp-for="SelectedCategoryId" class="form-label">Kategorija</label>
+        <select asp-for="SelectedCategoryId" asp-items="Model.CategorySelectList" class="form-select" name="categoryId">
+            <option value="">--Sva jela--</option>
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="SearchTerm" class="form-label">Pretraga</label>
+        <input asp-for="SearchTerm" class="form-control" placeholder="Pretrazi naslove..." />
+    </div>
+    <div class="col-md-2">
+        <label asp-for="SortOrder" class="form-label">Sortiraj po</label>
+        <select asp-for="SortOrder" class="form-select">
+            <option value="">Naziv A-Z</option>
+            <option value="naziv_desc">Naziv Z-A</option>
+            <option value="cena">Od najskupljeg</option>
+        </select>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr class="table-warning">
-            <th>Naziv</th>
-            <th>Opcije</th>
-
-        </tr>
-
-    </thead>
-    <tbody>
-        @foreach (var j in Model)
+    <div class="row justify-content-center mt-3">
+        <div class="col-auto">
+            <button type="submit" class="btn btn-info">Filtriraj</button>
+        </div>
+    </div>
+</form>
+<div class="row justify-content-center">
+    <div class="d-flex col-11 justify-content-around flex-wrap container border border-warning bg-light p-3">
+        @foreach (var j in Model.PagedJela.Items)
         {
-            <tr class="table-warning">
-                <td>@j.Naziv</td>
-                <td>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@j.Id" class="btn btn-warning">Izmeni</a>
-                        <form asp-action="Delete" method="post" class="d-inline">
-                            <input type="hidden" value="@j.Id" name="id" />
-                            <button type="submit" class="btn btn-danger">Obriši</button>
-                        </form>
-                    }
-                 
-                    <a asp-action="Details" asp-route-id="@j.Id" class="btn btn-primary">Detaljnije</a>
-                   
-                </td>
-            </tr>
+            <div style="width: 200px;" class="m-2">
+                <div style="width: 100%; height: 150px;">
+                    <img src="@j.Slika" style="width: 100%; height: 100%;" />
+                </div>
+                <div>
+                    <div class="text-center fw-bold">
+                        <a asp-controller="Jelo" asp-action="Details" asp-route-id="@j.Id">@j.Naziv</a>
+                    </div>
+                    <div class="text-center fw-bold">
+                        @j.Cena RSD
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@j.Id" class="btn btn-warning">Izmeni</a>
+                            <form asp-action="Delete" method="post" class="d-inline">
+                                <input type="hidden" value="@j.Id" name="id" />
+                                <button type="submit" class="btn btn-danger">Obriši</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
         }
 
-    </tbody>
+    </div>
+</div>
 
-</table>
+@if (Model.PagedJela.TotalPages > 1)
+{
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= Model.PagedJela.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PagedJela.PageNumber ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-categoryId="@Model.SelectedCategoryId"
+                       asp-route-searchTerm="@Model.SearchTerm" asp-route-sortOrder="@Model.SortOrder" asp-route-page="@i">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

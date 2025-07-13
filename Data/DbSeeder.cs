@@ -30,5 +30,24 @@ namespace RestoranASP.Data
             }
 
         }
+        public static async Task SeedKategorijeAsync(ApplicationDbContext context)
+        {
+            if (!context.Kategorije.Any())
+            {
+                var kategorije = new List<Kategorija>()
+                {
+                    new Kategorija() {Naziv = "Nekategorizovano"},
+                    new Kategorija() {Naziv = "Čorbe"},
+                    new Kategorija() {Naziv = "Posna jela"},
+                    new Kategorija() {Naziv = "Dezert"},
+                    new Kategorija() {Naziv = "Pića"},
+                    new Kategorija() {Naziv = "Doručak"},
+                    new Kategorija() {Naziv = "Meze"}
+                };
+
+                await context.AddRangeAsync(kategorije);
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }

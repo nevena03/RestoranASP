@@ -9,34 +9,56 @@
         <a asp-action="Create" class="btn btn-success">Dodaj novu kategoriju</a>
     </div>
 }
-<table class="table">
-    <thead>
-        <tr class="table-warning">
-           <th>Naziv</th>
-           <th>Opcije</th>
 
+<table id="kategorijeTabela" class="table table-bordered table-striped table-warning">
+    <thead>
+        <tr>
+            <th>Kategorija</th>
+            <th>Broj jela</th>
+            <th>Opcije</th>
         </tr>
-        
     </thead>
     <tbody>
-        @foreach(var k in Model)
+        @foreach (var kategorija in Model)
         {
-            <tr class="table-warning">
-                <td>@k.Naziv</td>
+            <tr>
+                <td>@kategorija.Naziv</td>
+                <td>@kategorija.Jela.Count</td>
                 <td>
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-action="Edit" asp-route-id="@k.Id" class="btn btn-warning">Izmeni</a>
+                        <a asp-action="Edit" asp-route-id="@kategorija.Id" class="btn btn-warning">Izmeni</a>
                         <form asp-action="Delete" method="post" class="d-inline">
-                            <input type="hidden" value="@k.Id" name="id" />
+                            <input type="hidden" value="@kategorija.Id" name="id" />
                             <button type="submit" class="btn btn-danger">Obriši</button>
-                        </form>   
+                        </form>
                     }
-                    <a asp-action="Details" asp-route-id="@k.Id" class="btn btn-primary">Detaljnije</a>
+                    <a asp-action="Details" asp-route-id="@kategorija.Id" class="btn btn-primary">Detaljnije</a>
                 </td>
             </tr>
         }
-     
     </tbody>
-   
 </table>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#kategorijeTabela').DataTable({
+                "language": {
+                    "search": "Pretraga:",
+                    "lengthMenu": "Prikaži _MENU_ zapisa",
+                    "zeroRecords": "Nema pronađenih rezultata",
+                    "info": "Prikazano _START_ do _END_ od _TOTAL_ zapisa",
+                    "infoEmpty": "Nema zapisa",
+                    "paginate": {
+                        "first": "Prva",
+                        "last": "Poslednja",
+                        "next": "Sledeća",
+                        "previous": "Prethodna"
+                    }
+                }
+            });
+        });
+    </script>
+}

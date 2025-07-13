@@ -1,19 +1,23 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RestoranASP.Data;
 using RestoranASP.Models;
+using RestoranASP.Models.ViewModels;
 
 namespace RestoranASP.Controllers
 {
+
     public class JeloController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public JeloController (ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public JeloController (ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
@@ -108,10 +112,51 @@ namespace RestoranASP.Controllers
         }
 
         
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoryId, string searchTerm, string sortOrder, int page=1, int pageSize=10)
         {
-            var jelo = await _context.Jela.ToListAsync();
-            return View(jelo);
+            var JeloQuery = _context.Jela.Include(j=>j.Kategorija).AsQueryable();
+            if (categoryId.HasValue)
+            {
+                JeloQuery = JeloQuery.Where(j=>j.KategorijaId == categoryId.Value);
+            }
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                JeloQuery = JeloQuery.Where(j => j.Naziv.Contains(searchTerm));
+            }
+            JeloQuery = sortOrder switch
+            {
+                "naziv_desc" => JeloQuery.OrderByDescending(j => j.Naziv),
+                "cena" => JeloQuery.OrderByDescending(j => j.Cena),
+                _ => JeloQuery.OrderBy(j=>j.Naziv)
+            };
+
+            var totalItems = await JeloQuery.CountAsync();
+            var jela = await JeloQuery.Skip((page-1) * pageSize).Take(pageSize).ToListAsync();
+
+            var kategorije = await _context.Kategorije.ToListAsync();
+            var selectList = new SelectList(kategorije, "Id", "Naziv", categoryId);
+
+            var pagedResult = new PagedResult<Jelo>
+            {
+                Items = jela,
+                PageNumber = page,
+                PageSize = pageSize,
+                TotalItems = totalItems
+            };
+
+            var viewModel = new JeloFilterViewModel
+            {
+                PagedJela = pagedResult,
+                CategorySelectList = selectList,
+                SelectedCategoryId = categoryId,
+                SearchTerm = searchTerm,
+                SortOrder = sortOrder
+            };
+
+            ViewBag.CurretUserId = _userManager.GetUserId(User);
+            return View(viewModel);
+
+
         }
 
         public async Task<IActionResult> Details(int id)
