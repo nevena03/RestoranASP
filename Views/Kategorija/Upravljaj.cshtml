@@ -1,0 +1,125 @@
+﻿@{
+    ViewData["Title"] = "Upravljanje kategorijama uz API";
+}
+
+
+<div id="dodavanje">
+    <h3>Dodavanje nove kategorije</h3>
+    <form id="formaDodajKategoriu">
+        <label class="fw-bold">Naziv: </label><br />
+        <input type="text" id="inputName" placeholder="Unesite naziv kategorije" required /><br /><br />
+
+        <button type="submit" class="btn btn-success">Dodaj kategoriju</button>
+    </form>
+    <div id="greskaDodaj" style="color:red; margin-top:5px;"></div>
+</div>
+
+<hr />
+
+<div id="lista">
+    <h3>Lista kategorija</h3>
+    <table id="tabela" border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>CategoryId</th>
+                <th>Name</th>
+                <th>Opcija</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            function ucitajSve() {
+                $.ajax({
+                    url: '/api/Kategorija',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#tabela tbody').empty();
+
+                        data.forEach(function (k) {
+                            var red = '<tr data-id="' + k.id + '">' +
+                                '<td>' + k.id + '</td>' +
+                                '<td>' + k.naziv + '</td>' +
+                                '<td><button class="btn-brisi">Obriši</button></td>' +
+                                '</tr>';
+                            $('#tabela tbody').append(red);
+                        });
+                    },
+                    error: function (xhr) {
+                        console.error('Greska pri GET /api/Kategorija:', xhr.responseText);
+                    }
+                });
+            }
+
+            ucitajSve();
+
+            $('#formaDodajKategoriu').submit(function (e) {
+                e.preventDefault();
+                var naziv = $('#inputName').val().trim();
+                if (!naziv) {
+                    $('#greskaDodaj').text('Naziv kategorije je obavezan!');
+                    return;
+                }
+
+
+                var novo = {
+                    Naziv: naziv
+                };
+
+                $.ajax({
+                    url: '/api/Kategorija',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(novo),
+                    success: function (vracena) {
+                        ucitajSve();
+                        $('#inputName').val('');
+                        $('#greskaDodaj').text('');
+                    },
+                    error: function (xhr) {
+                        var msg = xhr.responseText;
+                        try {
+                            var obj = JSON.parse(xhr.responseText);
+                            if (obj.errors) {
+                                var msgs = [];
+                                for (var k in obj.errors) {
+                                    msgs.push(obj.errors[k].join(', '));
+                                }
+                                msg = msgs.join(' | ');
+                            }
+                        } catch { }
+                        $('#greskaDodaj').text('Greška: ' + msg);
+                    }
+                });
+            });
+
+            $('#tabela').on('click', '.btn-brisi', function () {
+                var red = $(this).closest('tr');
+                var id = red.data('id');
+
+                if (!confirm('Da li ste sigurni da zelite da obrišete kategoriju?')){
+                    return;
+                }
+
+                $.ajax({
+                    url: '/api/Kategorija/' + id,
+                    method: 'DELETE',
+                    success: function () {
+                        ucitajSve();
+                    },
+                    error: function (xhr) {
+                        var poruka = xhr.responseText || 'Došlo je do greške!';
+                        alert('Greska pri vrisanju: ' + poruka);
+                    }
+                });
+            });
+        });
+    </script>
+}
